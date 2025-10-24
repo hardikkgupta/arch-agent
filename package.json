@@ -1,0 +1,12 @@
+{
+    "name": "arch-agent",
+    "version": "0.0.1",
+    "description": "Arch Agent is a tool for deploying architecture diagrams in README.md files",
+    "scripts": {
+        "emit": "node tools/pipeline.local.js",
+        "publish:github": "node tools/publishToGitHub.js",
+    },
+    "dependencies":{
+        "octokit": "^4.0.2"
+    }
+}
