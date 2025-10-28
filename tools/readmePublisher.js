@@ -6,7 +6,7 @@ const END = "<!--ARCH-END-->";
 export function upsertReadmeSection(mdPath, newBlock) {
   const text = fs.readFileSync(mdPath, "utf8");
   const pattern = new RegExp(`${escapeForRegex(START)}[\\s\\S]*?${escapeForRegex(END)}`);
-  const replacement = `${START}\n${newBlock}\n${END}`;
+  const replacement = `${START}\n\n${newBlock}\n\n${END}`;
 
   const updated = pattern.test(text)
     ? text.replace(pattern, replacement)
