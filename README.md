@@ -1,5 +1,8 @@
 # arch-agent
 
 <!--ARCH-START-->
-# test
+```mermaid
+    flowchart LR
+    A[API] --> B[(DB)]
+    ```
 <!--ARCH-END-->
