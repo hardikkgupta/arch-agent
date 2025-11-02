@@ -3,7 +3,7 @@
 <!--ARCH-START-->
 
 ```mermaid
-%% updated: 2025-11-02T20:38:13.440Z
+%% updated: 2025-11-02T21:34:47.901Z
 flowchart LR
   subgraph Backend
     api_gateway["api-gateway"]
