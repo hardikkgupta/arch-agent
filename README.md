@@ -3,10 +3,20 @@
 <!--ARCH-START-->
 
 ```mermaid
-%% updated: 2025-10-31T13:55:56.694Z
+%% updated: 2025-11-02T20:13:39.292Z
 flowchart LR
-  A[API] --> B[(DB)]
+  subgraph Backend
+    api_gateway["api-gateway"]
+    cron["cron"]
+    db_main[(db.main)]
+    frontend["frontend"]
+    nginx["nginx"]
+    payments["payments"]
+    queue["queue"]
+    redis["redis"]
+    users["users"]
+    worker["worker"]
+  end
 ```
-
 
 <!--ARCH-END-->
