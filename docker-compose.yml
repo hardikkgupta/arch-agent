@@ -1,0 +1,85 @@
+version: "3.9"
+
+services:
+  db.main:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes"]
+
+  queue:
+    image: rabbitmq:3-management
+
+  users:
+    image: ghcr.io/example/users:1.2.3
+    depends_on:            # MAP form (parser grabs the keys)
+      db.main:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://app:secret@db.main:5432/app
+
+  payments:
+    image: ghcr.io/example/payments:4.5.6
+    depends_on:            # MAP form
+      db.main:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://app:secret@db.main:5432/app
+
+  api-gateway:
+    image: ghcr.io/example/api-gateway:2.0.0
+    depends_on:            # ARRAY form
+      - users
+      - payments
+      - db.main
+      - redis
+    environment:
+      USERS_URL: http://users:8080
+      PAYMENTS_URL: http://payments:8080
+      REDIS_URL: redis://redis:6379
+
+  worker:
+    image: ghcr.io/example/worker:0.8.0
+    depends_on:            # ARRAY form
+      - queue
+      - db.main
+
+  cron:
+    image: ghcr.io/example/cron:0.1.0
+    depends_on:            # MAP form + extra dep
+      db.main:
+        condition: service_healthy
+      queue:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+
+  frontend:
+    image: node:20-alpine
+    command: ["sh", "-c", "node server.js"]
+    depends_on:            # ARRAY form
+      - api-gateway
+
+  nginx:
+    image: nginx:1.27
+    depends_on:            # ARRAY form
+      - frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./ops/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  dbdata:
