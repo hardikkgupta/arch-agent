@@ -2,6 +2,6 @@
 
 <!--ARCH-START-->
 
-![Architecture](docs/architecture.svg)
+![Architecture]()
 
 <!--ARCH-END-->
